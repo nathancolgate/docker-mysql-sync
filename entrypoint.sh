@@ -20,7 +20,7 @@ done
 # Sync source to destination
 #
 
-while ! mysqladmin -h "${SRC_HOST}" -u "${SRC_USER}" --password="${SRC_PASS}" ping --silent; do
+while ! mysqladmin -h "${SRC_HOST}" -u "${SRC_USER}" --password="${SRC_PASS}" ping; do
     echo -e "MySQL server at ${SRC_HOST} not ready, trying again later..."
     sleep 1
 done
@@ -30,11 +30,12 @@ mysqldump \
   --user="${SRC_USER}" \
   --password="${SRC_PASS}" \
   --host="${SRC_HOST}" \
-  --ignore-table="versions" \
+  --ignore-table="${SRC_NAME}.versions" \
+  --no-tablespaces \
   "${SRC_NAME}" \
   > /sql/dump.sql
 
-while ! mysqladmin -h "${DEST_HOST}" -u "${DEST_USER}" --password="${DEST_PASS}" ping --silent; do
+while ! mysqladmin -h "${DEST_HOST}" -u "${DEST_USER}" --password="${DEST_PASS}" ping; do
     echo -e "MySQL server at ${DEST_HOST} not ready, trying again later..."
     sleep 1
 done
